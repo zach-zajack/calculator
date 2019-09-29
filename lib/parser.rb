@@ -3,8 +3,7 @@ module Calculator
     Instruction = Struct.new(:type, :args)
     INSTRUCTIONS = {
       exp: 2,
-      sqrt: 1,
-      nthrt: 2,
+      root: 2,
       multiply: 2,
       divide: 2,
       add: 2,
@@ -46,7 +45,7 @@ module Calculator
 
     def parse_term
       parse_factor
-      parse(:multiply, :divide, :exp, :sqrt, :nthrt) { parse_term }
+      parse(:multiply, :divide, :exp, :root) { parse_term }
     end
 
     def parse_factor

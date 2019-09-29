@@ -8,8 +8,7 @@ module Calculator
       l_paren: '\(',
       r_paren: '\)',
       exp: '\^',
-      sqrt: 'sqrt',
-      nthrt: 'nthrt',
+      root: 'root',
       multiply: '\*',
       divide: '\/',
       add: '\+',
@@ -32,8 +31,8 @@ module Calculator
         .gsub('\left(', "(")
         .gsub('\right)', ")")
         .gsub(/\^\{(.*?)\}/, '^(\1)')
-        .gsub(/\\sqrt\{(.*?)\}/, 'sqrt(\1)')
-        .gsub(/\\sqrt\[(.*?)\]\{(.*?)\}/, '\1nthrt(\2)')
+        .gsub(/\\sqrt\{(.*?)\}/, '2root(\1)')
+        .gsub(/\\sqrt\[(.*?)\]\{(.*?)\}/, '(\1)root(\2)')
         .gsub('\cdot', "*")
         .gsub(/\\frac\{(.*?)\}\{(.*?)\}/, '((\1)/(\2))')
         .gsub(/(#{TOKENS[:number]})\((.*?)\)/, '\1*\2')

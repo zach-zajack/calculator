@@ -15,12 +15,7 @@ module Calculator
       return self
     end
 
-    def sqrt
-      @value **= 0.5
-      return self
-    end
-
-    def nthrt(n)
+    def root(n)
       @value **= (1/n.value)
       return self
     end
