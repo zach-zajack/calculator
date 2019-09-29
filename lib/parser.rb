@@ -25,14 +25,6 @@ module Calculator
       return accepted_token
     end
 
-    def expect(token)
-      accept(token) || (raise "Expected #{token}, got #{@token.value}")
-    end
-
-    def unexpect(token)
-      raise "Unexpected #{token}" if accept(token)
-    end
-
     def advance
       while read_token == :whitespace
       end
@@ -59,13 +51,12 @@ module Calculator
     def parse_factor
       if accept(:l_paren)
         parse_expr
-        expect(:r_paren)
+        accept(:r_paren)
     # elsif name = accept(:name)
     #   @instructions << Instruction.new(name.value.to_sym)
     #   expect(:l_paren)
       elsif num = accept(:number)
         @instructions << Instruction.new(:push, [num.value.to_f])
-        unexpect(:number)
       end
     end
 
@@ -79,7 +70,7 @@ module Calculator
           break @stack.push(num.send(instr_type.method, *args))
         end
       end
-      `document.getElementById("answer").textContent = #{@stack.first.to_s}`
+      `document.getElementById("answer").textContent = #{@stack.first}`
     end
   end
 end

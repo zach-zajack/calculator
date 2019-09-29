@@ -5,7 +5,11 @@ $(document).ready(function() {
     spaceBehavesLikeTab: true,
     handlers: {
       edit: function() {
-        Opal.eval("Calculator::Parser.new(%q{"+mathField.latex()+"}).run");
+        try {
+          Opal.eval("Calculator::Parser.new(%q{"+mathField.latex()+"}).run");
+        } catch {
+          document.getElementById("answer").textContent = "";
+        }
       }
     }
   });
