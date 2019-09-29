@@ -1,14 +1,15 @@
 module Calculator
   class Parser < Lexer
     Instruction = Struct.new(:type, :args)
-    InstructionType = Struct.new(:name, :args_count, :method)
-    INSTRUCTIONS = [
-      InstructionType.new(:exp, 2, :**),
-      InstructionType.new(:multiply, 2, :*),
-      InstructionType.new(:divide, 2, :/),
-      InstructionType.new(:add, 2, :+),
-      InstructionType.new(:subtract, 2, :-)
-    ]
+    INSTRUCTIONS = {
+      exp: 2,
+      sqrt: 1,
+      nthrt: 2,
+      multiply: 2,
+      divide: 2,
+      add: 2,
+      subtract: 2
+    }
 
     def run
       advance
@@ -45,7 +46,7 @@ module Calculator
 
     def parse_term
       parse_factor
-      parse(:multiply, :divide, :exp) { parse_term }
+      parse(:multiply, :divide, :exp, :sqrt, :nthrt) { parse_term }
     end
 
     def parse_factor
@@ -56,18 +57,18 @@ module Calculator
     #   @instructions << Instruction.new(name.value.to_sym)
     #   expect(:l_paren)
       elsif num = accept(:number)
-        @instructions << Instruction.new(:push, [num.value.to_f])
+        @instructions << Instruction.new(:push, [Number.new(num.value)])
       end
     end
 
     def compile
       @stack = []
       while instruction = @instructions.shift
-        INSTRUCTIONS.each do |instr_type|
+        INSTRUCTIONS.each do |name, args_count|
           break @stack.push(instruction.args.first) if instruction.type == :push
-          next unless instruction.type == instr_type.name
-          num, *args = @stack.pop(instr_type.args_count)
-          break @stack.push(num.send(instr_type.method, *args))
+          next unless instruction.type == name
+          num, *args = @stack.pop(args_count)
+          break @stack.push(num.send(name, *args))
         end
       end
       `document.getElementById("answer").textContent = #{@stack.first}`

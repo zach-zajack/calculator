@@ -8,6 +8,8 @@ module Calculator
       l_paren: '\(',
       r_paren: '\)',
       exp: '\^',
+      sqrt: 'sqrt',
+      nthrt: 'nthrt',
       multiply: '\*',
       divide: '\/',
       add: '\+',
@@ -16,7 +18,7 @@ module Calculator
     }
 
     def initialize(source)
-      @source = analyze_latex(source)
+      @source = simplify_latex(source)
       @pos = 0
       @instructions = []
       clear_token
@@ -24,15 +26,17 @@ module Calculator
 
     private
 
-    def analyze_latex(source)
+    def simplify_latex(source)
       # gsub! doesn't work in Opal
       source
         .gsub('\left(', "(")
         .gsub('\right)', ")")
-        .gsub(/\^\{(.+)\}/, '^(\1)')
+        .gsub(/\^\{(.*?)\}/, '^(\1)')
+        .gsub(/\\sqrt\{(.*?)\}/, 'sqrt(\1)')
+        .gsub(/\\sqrt\[(.*?)\]\{(.*?)\}/, '\1nthrt(\2)')
         .gsub('\cdot', "*")
-        .gsub(/\\frac\{(.+)\}\{(.+)\}/, '(\1/\2)')
-        .gsub(/(#{TOKENS[:number]})(#{TOKENS[:l_paren]})/, '\1*\2')
+        .gsub(/\\frac\{(.*?)\}\{(.*?)\}/, '((\1)/(\2))')
+        .gsub(/(#{TOKENS[:number]})\((.*?)\)/, '\1*\2')
     end
 
     def clear_token
