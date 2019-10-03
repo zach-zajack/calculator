@@ -4,20 +4,23 @@ module Calculator
     TOKENS = {
     # name: '[A-z]+\w*',
       number: '-?\d*\.?\d+',
-    # whitespace: '\s',
-      l_paren: '\(',
-      r_paren: '\)',
+      l_paren: '#left\(',
+      r_paren: '#right\)',
+      l_bracket: '\[',
+      r_bracket: '\]',
+      l_brace: '\{',
+      r_brace: '\}',
       exp: '\^',
-      root: 'root',
-      multiply: '\*',
-      divide: '\/',
+      sqrt: '#sqrt',
+      multiply: '#cdot',
+      divide: '#frac',
       add: '\+',
       subtract: '-',
       nil: nil
     }
 
     def initialize(source)
-      @source = simplify_latex(source)
+      @source = analyze_shorthand(source)
       @pos = 0
       @instructions = []
       clear_token
@@ -25,24 +28,18 @@ module Calculator
 
     private
 
-    def simplify_latex(source)
+    def analyze_shorthand(source)
       # gsub! doesn't work in Opal
       source
-        .gsub('\left(', "(")
-        .gsub('\right)', ")")
-        .gsub(/\^\{(.*?)\}/, '^(\1)')
-        .gsub(/\\sqrt\{(.*?)\}/, '2root(\1)')
-        .gsub(/\\sqrt\[(.*?)\]\{(.*?)\}/, '(\1)root(\2)')
-        .gsub('\cdot', "*")
-        .gsub(/\\frac\{(.*?)\}\{(.*?)\}/, '((\1)/(\2))')
-        .gsub(/(#{TOKENS[:number]})\((.*?)\)/, '\1*\2')
+        .gsub("\\", "#")
+        .gsub("#sqrt{", "#sqrt[2]{")
     end
 
     def clear_token
       @token = Token.new(nil, "")
     end
 
-    def read_token
+    def next_token
       clear_token
       TOKENS.each do |name, pattern|
         return @token.type = :end_of_file if stream == "" || name == :nil
