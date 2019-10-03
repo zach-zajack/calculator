@@ -16,7 +16,7 @@ module Calculator
     end
 
     def sqrt(n)
-      @value **= (1/n.value)
+      @value = n.value**(1/@value)
       return self
     end
 
