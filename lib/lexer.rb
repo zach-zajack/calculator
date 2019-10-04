@@ -29,17 +29,14 @@ module Calculator
     private
 
     def analyze_shorthand(source)
+      factor = "#{TOKENS[:number]}|#{TOKENS[:r_paren]}|#{TOKENS[:r_brace]}"
       # gsub! doesn't work in Opal
       source
         .gsub("\\", "#") # just makes parsing easier so I don't have to escape \
         .gsub("#sqrt{", "#sqrt[2]{")
-        .gsub(/(#{TOKENS[:number]})(#{TOKENS[:sqrt]})/, '\1#cdot\2')
-        .gsub(/(#{TOKENS[:r_paren]})(#{TOKENS[:sqrt]})/, '\1#cdot\2')
-        .gsub(/(#{TOKENS[:r_brace]})(#{TOKENS[:sqrt]})/, '\1#cdot\2')
-        .gsub(/(#{TOKENS[:number]})(#{TOKENS[:l_paren]})/, '\1#cdot\2')
-        .gsub(/(#{TOKENS[:r_paren]})(#{TOKENS[:l_paren]})/, '\1#cdot\2')
-        .gsub(/(#{TOKENS[:r_brace]})(#{TOKENS[:l_paren]})/, '\1#cdot\2')
-        .gsub(/(#{TOKENS[:number]})(#{TOKENS[:subtract]})/, '\1+\2')
+        .gsub(/(#{factor})(#{TOKENS[:sqrt]})/, '\1#cdot\2')
+        .gsub(/(#{factor})(#{TOKENS[:l_paren]})/, '\1#cdot\2')
+        .gsub(/(#{factor})(#{TOKENS[:subtract]})/, '\1+\2')
         .gsub("-", "-1#cdot")
     end
 
