@@ -51,7 +51,7 @@ module Calculator
 
     def parse_expr
       parse_term
-      parse_infix_operators(:add, :subtract) { parse_expr }
+      parse_infix_operators(:add) { parse_expr }
     end
 
     def parse_term
