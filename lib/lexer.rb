@@ -35,8 +35,10 @@ module Calculator
         .gsub("#sqrt{", "#sqrt[2]{")
         .gsub(/(#{TOKENS[:number]})(#{TOKENS[:sqrt]})/, '\1#cdot\2')
         .gsub(/(#{TOKENS[:r_paren]})(#{TOKENS[:sqrt]})/, '\1#cdot\2')
+        .gsub(/(#{TOKENS[:r_brace]})(#{TOKENS[:sqrt]})/, '\1#cdot\2')
         .gsub(/(#{TOKENS[:number]})(#{TOKENS[:l_paren]})/, '\1#cdot\2')
         .gsub(/(#{TOKENS[:r_paren]})(#{TOKENS[:l_paren]})/, '\1#cdot\2')
+        .gsub(/(#{TOKENS[:r_brace]})(#{TOKENS[:l_paren]})/, '\1#cdot\2')
         .gsub(/(#{TOKENS[:number]})(#{TOKENS[:subtract]})/, '\1+\2')
         .gsub("-", "-1#cdot")
     end

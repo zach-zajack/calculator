@@ -56,7 +56,7 @@ module Calculator
 
     def parse_term
       parse_factor
-      parse_functions(:divide, :sqrt) { parse_term }
+      parse_functions(:divide, :sqrt) { parse_factor }
       parse_infix_operators(:multiply, :exp) { parse_term }
     end
 
@@ -71,7 +71,7 @@ module Calculator
 
     def compile
       @stack = []
-      p @instructions.map { |i| "#{i.type} #{i.value}" }
+      p @instructions.map { |i| "#{i.type} #{i.value}" } # debug; remove later
       while instr = @instructions.shift
         INSTRUCTIONS.each do |name, args_count|
           break @stack.push(instr.value) if instr.type == :push
@@ -80,6 +80,7 @@ module Calculator
           break @stack.push(num.send(name, *args))
         end
       end
+      raise "multiple answers" if @stack.length > 1
       `document.getElementById("answer").textContent = #{@stack.first}`
     end
   end
