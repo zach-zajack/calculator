@@ -52,13 +52,12 @@ function createMathField() {
       },
       deleteOutOf: function(dir, exprField) {
         var id = getExprFieldId(exprField);
-        if(dir > 0) { dir = 0 }
-        if((id > 0 && dir < 0) || (id < exprFieldIds.length-1 && dir >= 0)) {
-          $(".equation-field")[id+dir+1].remove();
-          exprFields.splice(id+dir+1);
-          answerFields.splice(id+dir+1);
-          exprFieldIds.splice(id+dir+1);
-          selectMathField(id+dir);
+        if(id > 0 && dir < 0 && exprField.latex() == "") {
+          $(".equation-field")[id].remove();
+          exprFields.splice(id);
+          answerFields.splice(id);
+          exprFieldIds.splice(id);
+          selectMathField(id-1);
         }
       }
     }
