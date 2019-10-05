@@ -1,10 +1,10 @@
 var MQ;
 var mathFieldContainer;
 var curAnsSpan;
-var curAnsField;
 var curExprSpan;
-var curExprField;
-var mathFieldId = 0;
+var answerFields = [];
+var exprFields = [];
+var exprFieldIds = [];
 
 $(document).ready(function() {
   MQ = MathQuill.getInterface(2);
@@ -14,16 +14,14 @@ $(document).ready(function() {
 
 function createMathField() {
   mathFieldContainer.insertAdjacentHTML("beforeend",
-    "<div class='equation-field' id='equation-field"+mathFieldId+"'" +
-      " onclick='selectMathField("+mathFieldId+")'>" +
-    "<span class='field' id='field"+mathFieldId+"'></span>" +
-    "<span class='answer-field' id='answer-field"+mathFieldId+"'></span><br/>" +
+    "<div class='equation-field'>" +
+      "<span class='expr-field'></span><span class='answer-field'></span>" +
     "</div>"
   );
-  curAnsSpan = document.getElementById("answer-field"+mathFieldId);
-  curExprSpan = document.getElementById("field"+mathFieldId);
-  curAnsField = MQ.StaticMath(curAnsSpan);
-  curExprField = MQ.MathField(curExprSpan, {
+  var answerSpans = $(".answer-field");
+  var exprSpans = $(".expr-field");
+  answerFields.push(MQ.StaticMath(answerSpans[answerSpans.length-1]));
+  var exprField = MQ.MathField(exprSpans[exprSpans.length-1], {
     spaceBehavesLikeTab: true,
     leftRightIntoCmdGoes: "up",
     restrictMismatchedBrackets: true,
@@ -33,8 +31,8 @@ function createMathField() {
     autoOperatorNames: "ln log sin cos tan",
     handlers: {
       edit: function(exprField) {
-        var answerField =
-          MQ(document.getElementById("answer-"+exprField.el().id))
+        var answerField = answerFields[getExprFieldId(exprField)];
+        if(answerField == null) { return; }
         try {
           var answer =
             Opal.eval("Calculator::Parser.new(%q{"+exprField.latex()+"}).run")
@@ -51,17 +49,33 @@ function createMathField() {
         if(exprField.latex() != "") { createMathField(); }
       },
       upOutOf: function(exprField) {
-        selectMathField(parseInt(exprField.el().id.substring(5)) - 1);
+        selectMathField(getExprFieldId(exprField)-1);
       },
       downOutOf: function(exprField) {
-        selectMathField(parseInt(exprField.el().id.substring(5)) + 1);
+        selectMathField(getExprFieldId(exprField)+1);
+      },
+      deleteOutOf: function(dir, exprField) {
+        var id = getExprFieldId(exprField);
+        if(dir > 0) { dir = 0 }
+        if((id > 0 && dir < 0) || (id < exprFieldIds.length-1 && dir >= 0)) {
+          $(".equation-field")[id+dir+1].remove();
+          exprFields.splice(id+dir+1);
+          answerFields.splice(id+dir+1);
+          exprFieldIds.splice(id+dir+1);
+          selectMathField(id+dir);
+        }
       }
     }
   });
-  selectMathField(mathFieldId);
-  mathFieldId++;
+  exprFields.push(exprField);
+  exprFieldIds.push(exprField.id);
+  selectMathField(getExprFieldId(exprField));
+}
+
+function getExprFieldId(exprField) {
+  return exprFieldIds.indexOf(exprField.id);
 }
 
 function selectMathField(id) {
-  $("#field"+id).mousedown().mouseup();
+  return $($(".expr-field")[id]).mousedown().mouseup();
 }
