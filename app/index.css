@@ -1,3 +1,22 @@
-#math-field {
-  width: 100px;
+.equation-field {
+  width: 50vw;
+  border: 1px solid #555;
+  margin-top: -1px;
+  padding: 6px;
+  display: flex;
+}
+
+.equation-field:focus-within {
+  outline: 2px solid #9ecaed;
+  box-shadow: 0 0 10px #9ecaed;
+  order: 2;
+}
+
+.field {
+  flex-grow: 100;
+}
+
+.answer-field {
+  float: right;
+  margin: auto;
 }

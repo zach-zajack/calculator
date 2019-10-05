@@ -7,7 +7,7 @@ module Calculator
     end
 
     def to_s
-      @value.to_s
+      @value.round(9).to_s
     end
 
     def exp(n)

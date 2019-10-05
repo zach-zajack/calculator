@@ -80,8 +80,8 @@ module Calculator
           break @stack.push(num.send(name, *args))
         end
       end
-      raise "multiple answers" if @stack.length > 1
-      `document.getElementById("answer").textContent = #{@stack.first}`
+      return unless @stack.length == 1
+      return @stack.first.to_s
     end
   end
 end
