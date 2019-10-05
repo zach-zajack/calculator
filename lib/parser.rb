@@ -81,7 +81,7 @@ module Calculator
         end
       end
       return unless @stack.length == 1
-      return @stack.first.to_s
+      return "=#{@stack.first}"
     end
   end
 end

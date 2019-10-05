@@ -34,15 +34,11 @@ function createMathField() {
         var answerField = answerFields[getExprFieldId(exprField)];
         if(answerField == null) { return; }
         try {
-          var answer =
+          answerField.latex(
             Opal.eval("Calculator::Parser.new(%q{"+exprField.latex()+"}).run")
-          if(answer == undefined) {
-            answerField.latex("");
-          } else {
-            answerField.latex("="+answer);
-          }
+          );
         } catch {
-          answerField.latex("=");
+          answerField.latex("");
         }
       },
       enter: function(exprField) {
