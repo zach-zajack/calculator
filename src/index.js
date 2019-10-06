@@ -1,5 +1,6 @@
 var MQ;
 var mathFieldContainer;
+var buttonsContainer;
 var curAnsSpan;
 var curExprSpan;
 var answerFields = [];
@@ -9,7 +10,9 @@ var exprFieldIds = [];
 $(document).ready(function() {
   MQ = MathQuill.getInterface(2);
   mathFieldContainer = document.getElementById("math-fields");
+  buttonsContainer = document.getElementById("buttons");
   createMathField();
+  addButtons();
 });
 
 function createMathField() {
@@ -27,8 +30,8 @@ function createMathField() {
     restrictMismatchedBrackets: true,
     supSubsRequireOperand: true,
     autoSubscriptNumerals: true,
-    autoCommands: "pi sqrt nthroot",
-    autoOperatorNames: "ln log sin cos tan",
+    autoCommands: "sqrt nthroot",
+    autoOperatorNames: "ln log",
     handlers: {
       edit: function(exprField) {
         var answerField = answerFields[getExprFieldId(exprField)];
@@ -73,4 +76,12 @@ function getExprFieldId(exprField) {
 
 function selectMathField(id) {
   return $($(".expr-field")[id]).mousedown().mouseup();
+}
+
+function addButtons() {
+  for(var i = 0; i < buttonsContainer.children.length; i++) {
+    var button = buttonsContainer.children[i].children[0];
+    console.log(button)
+    MQ.StaticMath(button).latex(button.dataset.latex);
+  }
 }

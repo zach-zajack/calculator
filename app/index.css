@@ -1,5 +1,5 @@
 .equation-field {
-  width: 50vw;
+  width: 370px;
   border: 1px solid #555;
   margin-top: -1px;
   padding: 6px;
@@ -19,4 +19,39 @@
 .answer-field {
   float: right;
   margin: auto;
+}
+
+#buttons {
+  width: 400px;
+  display: block;
+}
+
+.btn {
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  background: linear-gradient(#ddd, #ccc);
+  height: 60px;
+  width: 60px;
+  margin: 1px;
+  position: relative;
+  float: left;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: linear-gradient(#bbb, #ccc);
+}
+
+.btn:active {
+  background: #aaa;
+}
+
+.btn-text {
+  font-size: 20px;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
 }
