@@ -94,8 +94,8 @@ function addButtons() {
   for(var i = 0; i < buttonsContainer.children.length; i++) {
     var button = buttonsContainer.children[i].children[0];
     MQ.StaticMath(button).latex(button.dataset.latex);
-    button.addEventListener("click", (e) => {
-
+    button.parentElement.addEventListener("click", (e) => {
+      exprFields[curFieldId].typedText(e.target.dataset.op)
     });
   }
 }
