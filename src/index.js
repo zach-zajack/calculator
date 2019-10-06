@@ -1,11 +1,9 @@
 var MQ;
 var mathFieldContainer;
 var buttonsContainer;
-var curAnsSpan;
-var curExprSpan;
+var curFieldId;
 var answerFields = [];
 var exprFields = [];
-var exprFieldIds = [];
 
 $(document).ready(function() {
   MQ = MathQuill.getInterface(2);
@@ -21,9 +19,13 @@ function createMathField() {
       "<span class='expr-field'></span><span class='answer-field'></span>" +
     "</div>"
   );
+  var fields = fieldsArray()
+  curFieldId = fields.length - 1;
+  fields[curFieldId].classList.add("active");
+  fields[curFieldId].addEventListener("click", (e) => { switchField(e); });
   var answerSpans = $(".answer-field");
-  var exprSpans = $(".expr-field");
   answerFields.push(MQ.StaticMath(answerSpans[answerSpans.length-1]));
+  var exprSpans = $(".expr-field");
   var exprField = MQ.MathField(exprSpans[exprSpans.length-1], {
     spaceBehavesLikeTab: true,
     leftRightIntoCmdGoes: "up",
@@ -33,8 +35,8 @@ function createMathField() {
     autoCommands: "sqrt nthroot",
     autoOperatorNames: "ln log",
     handlers: {
-      edit: function(exprField) {
-        var answerField = answerFields[getExprFieldId(exprField)];
+      edit: (exprField) => {
+        var answerField = answerFields[curFieldId];
         if(answerField == null) { return; }
         try {
           answerField.latex(
@@ -44,44 +46,56 @@ function createMathField() {
           answerField.latex("");
         }
       },
-      enter: function(exprField) {
+      enter: (exprField) => {
         if(exprField.latex() != "") { createMathField(); }
       },
-      upOutOf: function(exprField) {
-        selectMathField(getExprFieldId(exprField)-1);
+      upOutOf: (exprField) => {
+        selectMathField(curFieldId-1);
       },
-      downOutOf: function(exprField) {
-        selectMathField(getExprFieldId(exprField)+1);
+      downOutOf: (exprField) => {
+        selectMathField(curFieldId+1);
       },
-      deleteOutOf: function(dir, exprField) {
-        var id = getExprFieldId(exprField);
-        if(id > 0 && dir < 0 && exprField.latex() == "") {
-          $(".equation-field")[id].remove();
-          exprFields.splice(id);
-          answerFields.splice(id);
-          exprFieldIds.splice(id);
-          selectMathField(id-1);
+      deleteOutOf: (dir, exprField) => {
+        if(curFieldId > 0 && dir < 0 && exprField.latex() == "") {
+          $(".equation-field")[curFieldId].remove();
+          answerFields.splice(curFieldId);
+          exprFields.splice(curFieldId);
+          selectMathField(curFieldId-1);
         }
       }
     }
   });
   exprFields.push(exprField);
-  exprFieldIds.push(exprField.id);
-  selectMathField(getExprFieldId(exprField));
-}
-
-function getExprFieldId(exprField) {
-  return exprFieldIds.indexOf(exprField.id);
+  selectMathField(curFieldId);
 }
 
 function selectMathField(id) {
-  return $($(".expr-field")[id]).mousedown().mouseup();
+  var field = $(".expr-field")[id];
+  if(field != undefined) {
+    field.children[1].click();
+    $(field).mousedown().mouseup();
+  }
+}
+
+function switchField(event) {
+  for(var i = 0; i < $(".equation-field").length; i++) {
+    $(".equation-field")[i].classList.remove("active");
+  }
+  var field = event.target.parentElement.parentElement;
+  curFieldId = fieldsArray().indexOf(field)
+  field.classList.add("active");
+}
+
+function fieldsArray() {
+  return Array.from($(".equation-field"));
 }
 
 function addButtons() {
   for(var i = 0; i < buttonsContainer.children.length; i++) {
     var button = buttonsContainer.children[i].children[0];
-    console.log(button)
     MQ.StaticMath(button).latex(button.dataset.latex);
+    button.addEventListener("click", (e) => {
+
+    });
   }
 }
