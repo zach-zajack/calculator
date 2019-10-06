@@ -1,7 +1,25 @@
+.calculator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+
+#math-fields {
+  border: 1px solid #ccc;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 0;
+  height: 260px;
+  width: 414px;
+  vertical-align: bottom;
+  display: table-cell;
+}
+
 .equation-field {
-  width: 370px;
-  border: 1px solid #555;
-  margin-top: -1px;
+  width: 402px;
+  border: 1px solid #ccc;
+  margin: -1px;
   padding: 6px;
   display: flex;
 }
@@ -13,7 +31,7 @@
 }
 
 .expr-field {
-  flex-grow: 100;
+  flex-grow: 1;
 }
 
 .answer-field {
@@ -22,7 +40,12 @@
 }
 
 #buttons {
-  width: 400px;
+  border: 1px solid #ddd;
+  border-radius: 0 0 8px 8px;
+  padding: 3px;
+  height: 272px;
+  width: 408px;
+  background-color: #eee;
   display: block;
 }
 
@@ -32,7 +55,7 @@
   background: linear-gradient(#eee, #ddd);
   height: 60px;
   width: 60px;
-  margin: 1px;
+  margin: 3px;
   position: relative;
   float: left;
   cursor: pointer;
@@ -47,7 +70,6 @@
 }
 
 .btn-text {
-  font-size: 20px;
   pointer-events: none;
   position: absolute;
   top: 50%;
