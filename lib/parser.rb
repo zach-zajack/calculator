@@ -11,6 +11,8 @@ module Calculator
       subtract: 2
     }
     CONSTS = {
+      pi: Math::PI,
+      tau: Math::PI*2,
       e: Math::E
     }
 
@@ -70,7 +72,7 @@ module Calculator
       if num = accept(:number)
         @instructions << Instruction.new(:push, num.value)
       elsif varname = accept(:name)
-        @instructions << Instruction.new(:load, varname.value)
+        @instructions << Instruction.new(:load, varname.value.sub("&", ""))
       end
     end
 
@@ -80,7 +82,11 @@ module Calculator
       while instr = @instructions.shift
         INSTRUCTIONS.each do |name, args_count|
           break stack.push(instr.value) if instr.type == :push
-          break stack.push(CONSTS[instr.value]) if instr.type == :load
+          if instr.type == :load
+            const = CONSTS[instr.value]
+            return "=?" if const.nil?
+            break stack.push(const)
+          end
           next unless instr.type == name
           num, *args = stack.pop(args_count)
           break stack.push(num.send(name, *args))

@@ -31,7 +31,7 @@ function createMathField() {
     restrictMismatchedBrackets: true,
     supSubsRequireOperand: true,
     autoSubscriptNumerals: true,
-    autoCommands: "sqrt nthroot",
+    autoCommands: "sqrt nthroot pi tau",
     autoOperatorNames: "ln log",
     handlers: {
       edit: (exprField) => {

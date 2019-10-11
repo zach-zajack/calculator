@@ -2,7 +2,7 @@ module Calculator
   class Lexer
     Token = Struct.new(:type, :value)
     TOKENS = {
-      name: '([A-Z]|[a-z])',
+      name: '([A-Z]|[a-z]|&[a-z]+)(_\w+)?',
       number: '-?\d*\.?\d+',
       l_paren: '#left\(',
       r_paren: '#right\)',
@@ -35,6 +35,8 @@ module Calculator
       source
         .gsub("\\", "#") # just makes parsing easier so I don't have to escape \
         .gsub(" ", "")
+        .gsub("#pi", "&pi")
+        .gsub("#tau", "&tau")
         .gsub("#sqrt{", "#sqrt[2]{")
         .gsub(/(#{factor})(#{TOKENS[:name]})/, '\1#cdot\2')
         .gsub(/(#{factor})(#{TOKENS[:sqrt]})/, '\1#cdot\2')
