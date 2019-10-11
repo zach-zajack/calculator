@@ -2,7 +2,7 @@ module Calculator
   class Lexer
     Token = Struct.new(:type, :value)
     TOKENS = {
-    # name: '[A-z]+\w*',
+      name: '([A-Z]|[a-z])',
       number: '-?\d*\.?\d+',
       l_paren: '#left\(',
       r_paren: '#right\)',
@@ -12,6 +12,7 @@ module Calculator
       r_brace: '\}',
       exp: '\^',
       sqrt: '#sqrt',
+      log: '#log',
       multiply: '#cdot',
       divide: '#frac',
       add: '\+',
@@ -33,10 +34,16 @@ module Calculator
       # gsub! doesn't work in Opal
       source
         .gsub("\\", "#") # just makes parsing easier so I don't have to escape \
+        .gsub(" ", "")
         .gsub("#sqrt{", "#sqrt[2]{")
+        .gsub(/(#{factor})(#{TOKENS[:name]})/, '\1#cdot\2')
         .gsub(/(#{factor})(#{TOKENS[:sqrt]})/, '\1#cdot\2')
         .gsub(/(#{factor})(#{TOKENS[:l_paren]})/, '\1#cdot\2')
         .gsub(/(#{factor})(#{TOKENS[:subtract]})/, '\1+\2')
+        .gsub(/#log_((?!{).)/, '#log_{\1}')
+        .gsub(/#log(?!_)/, '#log_{10}')
+        .gsub("#ln", "#log_{e}")
+        .gsub("#log_", "#log")
         .gsub("-", "-1#cdot")
     end
 
@@ -48,9 +55,10 @@ module Calculator
       clear_token
       TOKENS.each do |name, pattern|
         return @token.type = :end_of_file if stream == "" || name == :nil
+        p stream
         next unless value = /^#{pattern}/.match(stream)
         @token.value = value[0]
-        @token.type = name
+        p @token.type = name
         @pos += value[0].length
         return @token.type
       end

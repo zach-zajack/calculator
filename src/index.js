@@ -28,7 +28,6 @@ function createMathField() {
   var exprSpans = $(".expr-field");
   var exprField = MQ.MathField(exprSpans[exprSpans.length-1], {
     spaceBehavesLikeTab: true,
-    leftRightIntoCmdGoes: "up",
     restrictMismatchedBrackets: true,
     supSubsRequireOperand: true,
     autoSubscriptNumerals: true,

@@ -1,14 +1,17 @@
 module Calculator
   class Parser < Lexer
     Instruction = Struct.new(:type, :value)
-    Arguments = Struct.new(:count, :type)
     INSTRUCTIONS = {
       exp: 2,
       sqrt: 2,
+      log: 2,
       multiply: 2,
       divide: 2,
       add: 2,
       subtract: 2
+    }
+    CONSTS = {
+      e: Math::E
     }
 
     def run
@@ -56,7 +59,7 @@ module Calculator
 
     def parse_term
       parse_factor
-      parse_functions(:divide, :sqrt) { parse_factor }
+      parse_functions(:divide, :sqrt, :log) { parse_factor }
       parse_infix_operators(:multiply, :exp) { parse_term }
     end
 
@@ -65,23 +68,25 @@ module Calculator
       parse_bracket(:l_bracket, :r_bracket)
       parse_bracket(:l_brace, :r_brace)
       if num = accept(:number)
-        @instructions << Instruction.new(:push, Number.new(num.value))
+        @instructions << Instruction.new(:push, num.value)
+      elsif varname = accept(:name)
+        @instructions << Instruction.new(:load, varname.value)
       end
     end
 
     def compile
-      @stack = []
+      stack = Stack.new
       p @instructions.map { |i| "#{i.type} #{i.value}" } # debug; remove later
       while instr = @instructions.shift
         INSTRUCTIONS.each do |name, args_count|
-          break @stack.push(instr.value) if instr.type == :push
+          break stack.push(instr.value) if instr.type == :push
+          break stack.push(CONSTS[instr.value]) if instr.type == :load
           next unless instr.type == name
-          num, *args = @stack.pop(args_count)
-          break @stack.push(num.send(name, *args))
+          num, *args = stack.pop(args_count)
+          break stack.push(num.send(name, *args))
         end
       end
-      return unless @stack.length == 1
-      return "=#{@stack.first}"
+      return stack.result
     end
   end
 end
