@@ -2,7 +2,7 @@ module Calculator
   class Lexer
     Token = Struct.new(:type, :value)
     TOKENS = {
-      name: '([A-Z]|[a-z]|&[a-z]+)(_\w+)?',
+      name: '([A-Z]|[a-z]|&pi|&tau)(_\w+)?',
       number: '\d*\.?\d+',
       l_paren: '#left\(',
       r_paren: '#right\)',
