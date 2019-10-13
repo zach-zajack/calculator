@@ -7,6 +7,17 @@ var exprFields = [];
 
 $(document).ready(function() {
   MQ = MathQuill.getInterface(2);
+  MQ.config({
+    spaceBehavesLikeTab: true,
+    restrictMismatchedBrackets: true,
+    supSubsRequireOperand: true,
+    autoSubscriptNumerals: true,
+    autoCommands: "sqrt nthroot pi tau",
+    autoOperatorNames:
+      "ln log " +
+      "sin cos tan asin acos atan " +
+      "sinh cosh tanh asinh acosh atanh"
+  });
   mathFieldContainer = document.getElementById("math-fields");
   buttonsContainer = document.getElementById("buttons");
   createMathField();
@@ -27,12 +38,6 @@ function createMathField() {
   answerFields.push(MQ.StaticMath(answerSpans[answerSpans.length-1]));
   var exprSpans = $(".expr-field");
   var exprField = MQ.MathField(exprSpans[exprSpans.length-1], {
-    spaceBehavesLikeTab: true,
-    restrictMismatchedBrackets: true,
-    supSubsRequireOperand: true,
-    autoSubscriptNumerals: true,
-    autoCommands: "sqrt nthroot pi tau",
-    autoOperatorNames: "ln log",
     handlers: {
       edit: (exprField) => {
         var answerField = answerFields[curFieldId];

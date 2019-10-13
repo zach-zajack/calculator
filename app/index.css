@@ -16,7 +16,7 @@
 }
 
 .equation-field {
-  width: 470px;
+  width: 674px;
   border: 1px solid #ccc;
   margin: -1px;
   padding: 6px;
@@ -43,7 +43,7 @@
   border-radius: 0 0 8px 8px;
   padding: 3px;
   height: 272px;
-  width: 476px;
+  width: 680px;
   background-color: #eee;
   display: block;
 }
