@@ -57,9 +57,10 @@ module Calculator
 
     def analyze_shorthand(source)
       # gsub! doesn't work in Opal
-      source
+      p source
         .gsub("\\", "#") # just makes parsing easier so I don't have to escape \
         .gsub(" ", "")
+        .gsub(/#operatorname\{(\w+)\}/, '#\1')
         .gsub("#pi", "&pi")
         .gsub("#tau", "&tau")
         .gsub("#sqrt{", "#sqrt[2]{")
