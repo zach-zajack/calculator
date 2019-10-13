@@ -3,7 +3,7 @@ module Calculator
     Token = Struct.new(:type, :value)
     TOKENS = {
       name: '([A-Z]|[a-z]|&[a-z]+)(_\w+)?',
-      number: '-?\d*\.?\d+',
+      number: '\d*\.?\d+',
       l_paren: '#left\(',
       r_paren: '#right\)',
       l_bracket: '\[',
@@ -17,12 +17,22 @@ module Calculator
       divide: '#frac',
       add: '\+',
       subtract: '-',
-      nil: nil
+      unrecognized: nil
     }
 
     def initialize(source)
       @source = analyze_shorthand(source)
       @pos = 0
+      tokenize
+      factor = [:name, :number, :r_paren, :r_brace]
+      index_between_tokens(factor, [:name, :sqrt, :l_paren]) do |i|
+        @tokens.insert(i, Token.new(:multiply))
+      end
+      index_between_tokens(factor, [:subtract]) do |i|
+        @tokens.delete_at(i)
+        tokens = [Token.new(:add), Token.new(:number, -1), Token.new(:multiply)]
+        @tokens.insert(i, *tokens)
+      end
       @instructions = []
       clear_token
     end
@@ -30,7 +40,6 @@ module Calculator
     private
 
     def analyze_shorthand(source)
-      factor = "#{TOKENS[:number]}|#{TOKENS[:r_paren]}|#{TOKENS[:r_brace]}"
       # gsub! doesn't work in Opal
       source
         .gsub("\\", "#") # just makes parsing easier so I don't have to escape \
@@ -38,15 +47,34 @@ module Calculator
         .gsub("#pi", "&pi")
         .gsub("#tau", "&tau")
         .gsub("#sqrt{", "#sqrt[2]{")
-        .gsub(/(#{factor})(#{TOKENS[:name]})/, '\1#cdot\2')
-        .gsub(/(#{factor})(#{TOKENS[:sqrt]})/, '\1#cdot\2')
-        .gsub(/(#{factor})(#{TOKENS[:l_paren]})/, '\1#cdot\2')
-        .gsub(/(#{factor})(#{TOKENS[:subtract]})/, '\1+\2')
         .gsub(/#log_((?!{).)/, '#log_{\1}')
         .gsub(/#log(?!_)/, '#log_{10}')
         .gsub("#ln", "#log_{e}")
         .gsub("#log_", "#log")
-        .gsub("-", "-1#cdot")
+    end
+
+    def tokenize
+      @tokens = []
+      until stream == ""
+        TOKENS.each do |name, pattern|
+          return if pattern.nil?
+          next unless value = /^#{pattern}/.match(stream)
+          @tokens << Token.new(name, value[0])
+          @pos += value[0].length
+          break
+        end
+      end
+      @tokens << Token.new(:end)
+    end
+
+    def index_between_tokens(first_token_set, second_token_set)
+      rindex = @tokens.length # reverse to prevent inserts messing up index
+      @tokens.clone.each_cons(2) do |prev, current|
+        rindex -= 1
+        next unless first_token_set.include?(prev.type)
+        next unless second_token_set.include?(current.type)
+        yield @tokens.length - rindex
+      end
     end
 
     def clear_token
@@ -54,16 +82,8 @@ module Calculator
     end
 
     def next_token
-      clear_token
-      TOKENS.each do |name, pattern|
-        return @token.type = :end_of_file if stream == "" || name == :nil
-        p stream
-        next unless value = /^#{pattern}/.match(stream)
-        @token.value = value[0]
-        p @token.type = name
-        @pos += value[0].length
-        return @token.type
-      end
+      @token = @tokens.shift
+      return @token.type
     end
 
     def stream

@@ -7,8 +7,7 @@ module Calculator
       log: 2,
       multiply: 2,
       divide: 2,
-      add: 2,
-      subtract: 2
+      add: 2
     }
     CONSTS = {
       pi: Math::PI,
@@ -18,7 +17,7 @@ module Calculator
 
     def run
       next_token
-      parse_expr until @token.type == :end_of_file
+      parse_expr until @token.type == :end
       compile
     end
 
