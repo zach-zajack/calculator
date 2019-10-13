@@ -5,6 +5,18 @@ module Calculator
       exp: 2,
       sqrt: 2,
       log: 2,
+      sin: 1,
+      cos: 1,
+      tan: 1,
+      asin: 1,
+      acos: 1,
+      atan: 1,
+      sinh: 1,
+      cosh: 1,
+      tanh: 1,
+      asinh: 1,
+      acosh: 1,
+      atanh: 1,
       multiply: 2,
       divide: 2,
       add: 2
@@ -60,7 +72,9 @@ module Calculator
 
     def parse_term
       parse_factor
-      parse_functions(:divide, :sqrt, :log) { parse_factor }
+      parse_functions(:divide, :sqrt, :log,
+        :sin, :cos, :tan, :asin, :acos, :atan,
+        :sinh, :cosh, :tanh, :asinh, :acosh, :atanh) { parse_factor }
       parse_infix_operators(:multiply, :exp) { parse_term }
     end
 
