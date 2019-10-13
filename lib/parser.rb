@@ -74,7 +74,7 @@ module Calculator
       parse_factor
       parse_functions(:divide, :sqrt, :log,
         :sin, :cos, :tan, :asin, :acos, :atan,
-        :sinh, :cosh, :tanh, :asinh, :acosh, :atanh) { parse_factor }
+        :sinh, :cosh, :tanh, :asinh, :acosh, :atanh) { parse_term }
       parse_infix_operators(:multiply, :exp) { parse_term }
     end
 
