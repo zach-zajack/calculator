@@ -60,6 +60,10 @@
   cursor: pointer;
 }
 
+.btn.number {
+  background: linear-gradient(#fff, #eee);
+}
+
 .btn:hover {
   background: #ccc;
 }
