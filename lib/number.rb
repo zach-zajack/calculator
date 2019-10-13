@@ -33,9 +33,5 @@ module Calculator
     def add(n)
       @value += n.value
     end
-
-    def subtract(n)
-      @value -= n.value
-    end
   end
 end

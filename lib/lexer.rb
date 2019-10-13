@@ -29,10 +29,14 @@ module Calculator
         @tokens.insert(i, Token.new(:multiply))
       end
       index_between_tokens(factor, [:subtract]) do |i|
-        @tokens.delete_at(i)
-        tokens = [Token.new(:add), Token.new(:number, -1), Token.new(:multiply)]
-        @tokens.insert(i, *tokens)
+        @tokens.insert(i, Token.new(:add))
       end
+      @tokens.each.with_index do |token, i|
+        next unless token.type == :subtract
+        @tokens.delete_at(i)
+        @tokens.insert(i, Token.new(:number, -1), Token.new(:multiply))
+      end
+      p @tokens.map(&:type)
       @instructions = []
       clear_token
     end
