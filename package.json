@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/zach-zajack/calculator#readme",
   "devDependencies": {
-    "electron": "^5.0.2"
+    "electron": "^9.1.0"
   },
   "dependencies": {
   }
